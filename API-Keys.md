@@ -60,3 +60,35 @@ Here is an example config for Prometheus:
 ```
 
 Note: we don't need to set a username field as it is not used.
+
+Here is an example config for PrometheusOperator:
+
+```
+apiVersion: monitoring.coreos.com/v1
+kind:   
+metadata:
+  name: uptime-kuma
+  namespace: uptime-kuma
+spec:
+  endpoints:
+    - basicAuth:
+        password:
+          key: password
+          name: uptime-kuma-metrics-basic-auth
+        username:
+          key: username
+          name: uptime-kuma-metrics-basic-auth
+      interval: 60s
+      path: /metrics
+      port: http
+      scrapeTimeout: 10s
+  namespaceSelector:
+    matchNames:
+      - uptime-kuma
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: uptime-kuma
+      app.kubernetes.io/name: uptime-kuma
+```
+
+Note: we need to set a username field for ServiceMonitor object handled by Prometheus Operator, otherwise scrape will fail.
